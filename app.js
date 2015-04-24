@@ -49,11 +49,18 @@ wss.on('connection', function(ws) {
         clearTimeout(ws.timeout);
     });
 
+    ws.on('message', function(e) {
+        msg = JSON.parse(e);
+
+        console.log("client asked for data since " + msg.time)
+        ws.lastTime = msg.time;
+
+        updatePrice(ws);
+    });
+
     ws.on('pong', function() {
     });
 
     ws.lastTime = 0;
-
-    updatePrice(ws);
 });
 
