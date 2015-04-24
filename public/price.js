@@ -34,6 +34,8 @@ var updatePriceData = function(addItem, updateDone) {
 var setupCanvasJS = function() {
     var buyData = [];
     var sellData = [];
+    var usdData = [];
+    var eurData = [];
 
     var chart = new CanvasJS.Chart("priceChart", {
         zoomEnabled: true,
@@ -47,19 +49,32 @@ var setupCanvasJS = function() {
             shared: true,
             borderColor: "black",
         },
-        axisY: {
-            title : "Price (NOK)" ,
-            valueFormatString: "0",
-            includeZero: false,
+        axisX: {
+            title : "Date",
+            gridThickness: 2,
+            gridColor: "#efefef",
             titleFontFamily: "calibri",
             titleFontSize: 16,
             titleFontWeight: "bold",
             labelFontFamily: "calibri",
             labelFontSize: 12,
         },
-        axisX: {
-            title : "Date",
-            valueFormatString: "DD.MM HH:mm",
+        axisY: {
+            title : "Price (NOK)" ,
+            valueFormatString: "0",
+            includeZero: false,
+            gridColor: "#efefef",
+            titleFontFamily: "calibri",
+            titleFontSize: 16,
+            titleFontWeight: "bold",
+            labelFontFamily: "calibri",
+            labelFontSize: 12,
+        },
+        axisY2: {
+            title : "Exchange rate" ,
+            valueFormatString: "0",
+            includeZero: false,
+            gridThickness: 0,
             titleFontFamily: "calibri",
             titleFontSize: 16,
             titleFontWeight: "bold",
@@ -69,8 +84,8 @@ var setupCanvasJS = function() {
         data: [
             {
                 name: "sell",
-                type: "spline",
-                color: "#c15959",
+                type: "line",
+                color: "#d11141",
                 yValueFormatString: "0.0000 NOK",
                 xValueType: "dateTime",
                 xValueFormatString: "YYYY-MM-DD HH:mm",
@@ -78,12 +93,32 @@ var setupCanvasJS = function() {
             },
             {
                 name: "buy",
-                type: "spline",
-                color: "#5ac45a",
+                type: "line",
+                color: "#00b159",
                 yValueFormatString: "0.0000 NOK",
                 xValueType: "dateTime",
                 xValueFormatString: "YYYY-MM-DD HH:mm",
                 dataPoints: buyData,
+            },
+            {
+                name: "usd",
+                type: "stepLine",
+                axisYType: "secondary",
+                color: "#00aedb",
+                yValueFormatString: "0.00 NOK/USD",
+                xValueType: "dateTime",
+                xValueFormatString: "YYYY-MM-DD HH:mm",
+                dataPoints: usdData,
+            },
+            {
+                name: "eur",
+                type: "line",
+                axisYType: "secondary",
+                color: "#f37735",
+                yValueFormatString: "0.00 NOK/EUR",
+                xValueType: "dateTime",
+                xValueFormatString: "YYYY-MM-DD HH:mm",
+                dataPoints: eurData,
             },
         ]
     });
@@ -93,13 +128,14 @@ var setupCanvasJS = function() {
 
         buyData.push({ x: time.getTime(), y: item.buy });
         sellData.push({ x: time.getTime(), y: item.sell });
+        usdData.push({ x: time.getTime(), y: item.usd });
+        eurData.push({ x: time.getTime(), y: item.eur });
     }, function() {
         chart.render();
     });
 };
 
 document.addEventListener("DOMContentLoaded", function(event) {
-    //setupChart();
     setupCanvasJS();
 });
 
