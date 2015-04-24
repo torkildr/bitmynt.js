@@ -4,7 +4,7 @@ var updatePriceData = function(addItem, updateDone) {
     var connection = new WebSocket(wsUrl);
 
     connection.onopen = function(e) {
-        console.log("connection to websocket: " + wsUrl);
+        console.log("connected to: " + wsUrl);
     };
 
     connection.onmessage = function(e) {
@@ -23,18 +23,52 @@ var setupCanvasJS = function() {
 
     var chart = new CanvasJS.Chart("priceChart", {
         zoomEnabled: true,
-        title: { text: "price" },
+        title: {
+            text: "Live bitmynt.no prices",
+            fontFamily: "calibri",
+            fontSize: 18,
+            fontWeight: "bold",
+        },
+        toolTip: {
+            shared: true,
+            borderColor: "black",
+        },
+        axisY: {
+            title : "Price (NOK)" ,
+            valueFormatString: "0",
+            includeZero: false,
+            titleFontFamily: "calibri",
+            titleFontSize: 16,
+            titleFontWeight: "bold",
+            labelFontFamily: "calibri",
+            labelFontSize: 12,
+        },
+        axisX: {
+            title : "Date",
+            valueFormatString: "DD.MM HH:mm",
+            titleFontFamily: "calibri",
+            titleFontSize: 16,
+            titleFontWeight: "bold",
+            labelFontFamily: "calibri",
+            labelFontSize: 12,
+        },
         data: [
             {
                 name: "sell",
-                type: "line",
+                type: "spline",
+                color: "#c15959",
+                yValueFormatString: "0.0000 NOK",
                 xValueType: "dateTime",
+                xValueFormatString: "YYYY-MM-DD HH:mm",
                 dataPoints: sellData,
             },
             {
                 name: "buy",
-                type: "line",
+                type: "spline",
+                color: "#5ac45a",
+                yValueFormatString: "0.0000 NOK",
                 xValueType: "dateTime",
+                xValueFormatString: "YYYY-MM-DD HH:mm",
                 dataPoints: buyData,
             },
         ]
