@@ -27,7 +27,7 @@ var updatePriceData = function(addItem, updateDone) {
             addItem(item);
         });
 
-        updateDone();
+        updateDone(maxTime);
     };
 }
 
@@ -40,7 +40,7 @@ var setupCanvasJS = function() {
     var chart = new CanvasJS.Chart("priceChart", {
         zoomEnabled: true,
         title: {
-            text: "Live bitmynt.no prices",
+            text: "bitmynt.no prices",
             fontFamily: "calibri",
             fontSize: 18,
             fontWeight: "bold",
@@ -123,6 +123,8 @@ var setupCanvasJS = function() {
         ]
     });
 
+    var chartTitle = chart.options.title.text;
+
     updatePriceData(function(item) {
         var time = new Date(item.time * 1000);
 
@@ -130,7 +132,10 @@ var setupCanvasJS = function() {
         sellData.push({ x: time.getTime(), y: item.sell });
         usdData.push({ x: time.getTime(), y: item.usd });
         eurData.push({ x: time.getTime(), y: item.eur });
-    }, function() {
+    }, function(maxTime) {
+        var time = new Date(maxTime * 1000);
+        chart.options.title.text = chartTitle + ', ' + time.toISOString();
+
         chart.render();
     });
 };
