@@ -49,6 +49,10 @@ var setupCanvasJS = function() {
             shared: true,
             borderColor: "black",
         },
+        legend: {
+            fontSize: 14,
+            verticalAlign: "top",
+        },
         axisX: {
             title : "Date",
             gridThickness: 2,
@@ -72,7 +76,7 @@ var setupCanvasJS = function() {
         },
         axisY2: {
             title : "Exchange rate" ,
-            valueFormatString: "0",
+            valueFormatString: "0.00",
             includeZero: false,
             gridThickness: 0,
             titleFontFamily: "calibri",
@@ -85,6 +89,7 @@ var setupCanvasJS = function() {
             {
                 name: "sell",
                 type: "line",
+                showInLegend: true,
                 color: "#d11141",
                 yValueFormatString: "0.0000 NOK",
                 xValueType: "dateTime",
@@ -94,6 +99,7 @@ var setupCanvasJS = function() {
             {
                 name: "buy",
                 type: "line",
+                showInLegend: true,
                 color: "#00b159",
                 yValueFormatString: "0.0000 NOK",
                 xValueType: "dateTime",
@@ -102,10 +108,11 @@ var setupCanvasJS = function() {
             },
             {
                 name: "usd",
-                type: "stepLine",
+                type: "line",
+                showInLegend: true,
                 axisYType: "secondary",
                 color: "#00aedb",
-                yValueFormatString: "0.00 NOK/USD",
+                yValueFormatString: "0.00 USD",
                 xValueType: "dateTime",
                 xValueFormatString: "YYYY-MM-DD HH:mm",
                 dataPoints: usdData,
@@ -113,9 +120,10 @@ var setupCanvasJS = function() {
             {
                 name: "eur",
                 type: "line",
+                showInLegend: true,
                 axisYType: "secondary",
                 color: "#f37735",
-                yValueFormatString: "0.00 NOK/EUR",
+                yValueFormatString: "0.00 EUR",
                 xValueType: "dateTime",
                 xValueFormatString: "YYYY-MM-DD HH:mm",
                 dataPoints: eurData,
@@ -123,18 +131,16 @@ var setupCanvasJS = function() {
         ]
     });
 
-    var chartTitle = chart.options.title.text;
-
     updatePriceData(function(item) {
-        var time = new Date(item.time * 1000);
+        var time = new Date(item.time * 1000).getTime();
 
-        buyData.push({ x: time.getTime(), y: item.buy });
-        sellData.push({ x: time.getTime(), y: item.sell });
-        usdData.push({ x: time.getTime(), y: item.usd });
-        eurData.push({ x: time.getTime(), y: item.eur });
+        buyData.push({ x: time, y: item.buy });
+        sellData.push({ x: time, y: item.sell });
+        usdData.push({ x: time, y: item.buy / item.usd });
+        eurData.push({ x: time, y: item.buy / item.eur });
     }, function(maxTime) {
         var time = new Date(maxTime * 1000);
-        chart.options.title.text = chartTitle + ', ' + time.toISOString();
+        chart.options.title.text = "Updated " + time.toISOString();
 
         chart.render();
     });

@@ -53,8 +53,9 @@ wss.on('connection', function(ws) {
         msg = JSON.parse(e);
 
         console.log("client asked for data since " + msg.time)
-        ws.lastTime = msg.time;
+        clearTimeout(ws.timeout);
 
+        ws.lastTime = msg.time;
         updatePrice(ws);
     });
 
