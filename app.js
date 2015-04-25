@@ -1,6 +1,7 @@
 var sqlite3 = require('sqlite3').verbose();
 var db = new sqlite3.Database('/home/torkildr/.bitmynt');
 var express = require('express');
+var compression = require('compression');
 var app = express();
 
 // corresponds to web server setup
@@ -9,7 +10,9 @@ var wsPort = 3034;
 
 var updateInterval = 5000;
 
+app.use(compression());
 app.use(express.static(__dirname + '/public'));
+
 app.listen(httpPort);
 console.log('HTTP port: ' + httpPort)
 
