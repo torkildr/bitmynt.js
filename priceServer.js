@@ -1,6 +1,6 @@
 var ws = require('ws');
 
-exports.listen = function(port, priceUpdated, cancelUpdate) {
+exports.listen = function(port, update, cancelUpdate) {
     console.log('WebSocket server listening on port ' + port)
 
     var WebSocketServer = ws.Server;
@@ -21,7 +21,7 @@ exports.listen = function(port, priceUpdated, cancelUpdate) {
             cancelUpdate(ws);
 
             ws.lastTime = msg.time;
-            priceUpdated(ws);
+            update(ws);
         });
 
         ws.on('pong', function() {

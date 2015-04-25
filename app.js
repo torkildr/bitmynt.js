@@ -21,10 +21,6 @@ var getPriceData = function(last, completed) {
     });
 };
 
-var cancelUpdate = function(client) {
-    clearTimeout(client.timeout);
-};
-
 var updatePrice = function(client) {
     getPriceData(client.lastTime, function(data, last) {
         if (data.length != 0){
@@ -36,6 +32,10 @@ var updatePrice = function(client) {
 
         client.timeout = setTimeout(updatePrice, updateInterval, client);
     });
+};
+
+var cancelUpdate = function(client) {
+    clearTimeout(client.timeout);
 };
 
 priceServer.listen(wsPort, updatePrice, cancelUpdate);
