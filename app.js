@@ -1,24 +1,14 @@
 var sqlite3 = require('sqlite3').verbose();
-var db = new sqlite3.Database('/home/torkildr/.bitmynt');
-var express = require('express');
-var compression = require('compression');
-var app = express();
+var priceServer = require('./priceServer.js');
+var webServer = require('./webServer.js');
 
-// corresponds to web server setup
+// should probably correspond to web server setup
 var httpPort = 3033;
 var wsPort = 3034;
 
 var updateInterval = 5000;
 
-app.use(compression());
-app.use(express.static(__dirname + '/public'));
-
-app.listen(httpPort);
-console.log('HTTP port: ' + httpPort)
-
-var WebSocketServer = require('ws').Server;
-var wss = new WebSocketServer({ port: wsPort });
-console.log('WebSocket port: ' + wsPort)
+var db = new sqlite3.Database('/home/torkildr/.bitmynt');
 
 var getPriceData = function(last, completed) {
     var data = [];
@@ -31,40 +21,23 @@ var getPriceData = function(last, completed) {
     });
 };
 
-var updatePrice = function(ws) {
-    getPriceData(ws.lastTime, function(data, last) {
+var cancelUpdate = function(client) {
+    clearTimeout(client.timeout);
+};
+
+var updatePrice = function(client) {
+    getPriceData(client.lastTime, function(data, last) {
         if (data.length != 0){
-            ws.lastTime = last;
-            ws.send(JSON.stringify(data));
+            client.lastTime = last;
+            client.send(JSON.stringify(data));
         } else {
-            ws.ping();
+            client.ping();
         }
 
-        ws.timeout = setTimeout(updatePrice, updateInterval, ws);
+        client.timeout = setTimeout(updatePrice, updateInterval, client);
     });
 };
 
-wss.on('connection', function(ws) {
-    console.log("connection established");
-
-    ws.on('close', function() {
-        console.log("closed");
-        clearTimeout(ws.timeout);
-    });
-
-    ws.on('message', function(e) {
-        msg = JSON.parse(e);
-
-        console.log("client asked for data since " + msg.time)
-        clearTimeout(ws.timeout);
-
-        ws.lastTime = msg.time;
-        updatePrice(ws);
-    });
-
-    ws.on('pong', function() {
-    });
-
-    ws.lastTime = 0;
-});
+priceServer.listen(wsPort, updatePrice, cancelUpdate);
+webServer.listen(httpPort);
 
