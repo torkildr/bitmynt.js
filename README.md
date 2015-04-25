@@ -1,7 +1,9 @@
 bitmynt.no live chart
-=====================
+---------------------
 
-Live charts data as it is put into the sqlite3 database being listened to.
+*tl;dr: [here it is live](http://bit.torkildr.no)*
+
+Live charts data as it is put into the sqlite3 dateabase being listened to.
 
 Client content is served statically by express. Chart data is served over WebSocket.
 
