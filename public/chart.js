@@ -1,8 +1,9 @@
-function PriceChart() {
+function PriceChart(elementId) {
     this.buyData = [];
     this.sellData = [];
     this.usdData = [];
     this.eurData = [];
+
 
     this.add = function(item) {
         var time = new Date(item.time * 1000).getTime();
@@ -20,8 +21,9 @@ function PriceChart() {
         this.chart.render();
     };
 
-    this.chart = new CanvasJS.Chart("priceChart", {
+    this.chart = new CanvasJS.Chart(elementId, {
         zoomEnabled: true,
+
         title: {
             text: "bitmynt.no prices",
             fontFamily: "calibri",
