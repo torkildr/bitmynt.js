@@ -18,7 +18,7 @@ exports.listen = function(port, update, cancelUpdate) {
         });
 
         ws.on('message', function(e) {
-            msg = JSON.parse(e);
+            var msg = JSON.parse(e);
 
             console.log(ws.id + ': asked for data since ' + msg.time);
             cancelUpdate(ws);
