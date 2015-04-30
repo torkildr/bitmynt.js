@@ -7,17 +7,20 @@ exports.listen = function(port, update, cancelUpdate) {
     var wss = new WebSocketServer({ port: port });
 
     wss.on('connection', function(ws) {
-        console.log("connection established");
+        var headers = ws.upgradeReq.headers;
+        ws.id = headers['x-forwarded-for'] + ':' + headers['x-forwarded-port'];
+
+        console.log(ws.id + ': connection established');
 
         ws.on('close', function() {
-            console.log("closed");
+            console.log(ws.id + ': connection closed');
             cancelUpdate(ws);
         });
 
         ws.on('message', function(e) {
             msg = JSON.parse(e);
 
-            console.log("client asked for data since " + msg.time)
+            console.log(ws.id + ': asked for data since ' + msg.time);
             cancelUpdate(ws);
 
             ws.lastTime = msg.time;
