@@ -2,7 +2,8 @@ function PriceServer(url) {
     var self = this;
     var connection = new ReconnectingWebSocket(url);
 
-    var maxTime = 0;
+    var now = Math.round(new Date().getTime() / 1000);
+    var maxTime = now - (24 * 60 * 60);
 
     connection.onopen = function(e) {
         console.log("connected to: " + url);

@@ -4,15 +4,19 @@
     <title>Bitmynt.js</title>
     <script src="/libs/reconnecting-websockets/1.0.0/reconnecting-websocket.min.js"></script>
     <script src="/libs/canvasjs/1.6.2/canvasjs.min.js"></script>
-    <script src="/chart.js"></script>
     <script src="/server.js"></script>
-    <script src="/main.js"></script>
+    <script src="/live.js"></script>
     <link href="/style.css" rel="stylesheet" />
 </head>
 <body>
     <h1>bitmynt.no prices</h1>
-    <div id="priceChart" style="height: 550px; width: 100%;"></div>
-    <a class="github" href="https://github.com/torkildr/bitmynt.js">Code on GitHub</a>
+    <div class="live" id="liveDate"></div>
+    <div class="live" id="liveNOK"></div>
+    <div class="live" id="liveUSD"></div>
+    <div class="live" id="liveEUR"></div>
+    <div class="github">
+        <a href="https://github.com/torkildr/bitmynt.js">Code on GitHub</a>
+    </div>
 </body>
 </html>
 

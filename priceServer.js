@@ -1,5 +1,10 @@
 var ws = require('ws');
 
+function writeLog(id, msg) {
+    var time = new Date().toISOString().replace(/T/, ' ').replace(/\..+/, '');
+    console.log(time + " [" + id + "]: " + msg);
+}
+
 exports.listen = function(port, update, cancelUpdate) {
     console.log('WebSocket server listening on port ' + port)
 
@@ -10,17 +15,17 @@ exports.listen = function(port, update, cancelUpdate) {
         var headers = ws.upgradeReq.headers;
         ws.id = headers['x-forwarded-for'] + ':' + headers['x-forwarded-port'];
 
-        console.log(ws.id + ': connection established');
+        writeLog(ws.id, 'connection established');
 
         ws.on('close', function() {
-            console.log(ws.id + ': connection closed');
+            writeLog(ws.id, 'connection closed');
             cancelUpdate(ws);
         });
 
         ws.on('message', function(e) {
             var msg = JSON.parse(e);
 
-            console.log(ws.id + ': asked for data since ' + msg.time);
+            writeLog(ws.id, 'asked for data since ' + msg.time);
             cancelUpdate(ws);
 
             ws.lastTime = msg.time;

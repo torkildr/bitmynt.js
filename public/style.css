@@ -1,5 +1,6 @@
 body {
     font-family: arial;
+    width: 100%;
 }
 
 h1 {
@@ -9,6 +10,21 @@ h1 {
 }
 
 .github {
-    font-size: 0.5em;
+    text-align: center;
+    font-size: 1.0em;
+    padding-top: 1.0em;
+}
+
+.live {
+    text-align: center;
+    font-size: 1.0em;
+}
+
+#liveDate {
+    padding-bottom: 1.0em;
+}
+
+#liveNOK {
+    font-weight: bold;
 }
 
