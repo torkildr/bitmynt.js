@@ -36,7 +36,8 @@ function LiveData(dateId, nokId, eurId, usdId) {
 
 var setupLiveData = function() {
     var live = new LiveData("liveDate", "liveNOK", "liveEUR", "liveUSD");
-    var server = new PriceServer("ws://" + window.location.host + "/ws");
+    var protocol = (window.location.protocol === "https:") ? "wss" : "ws";
+    var server = new PriceServer(protocol + "://" + window.location.host + "/ws");
 
     server.newPrice = function(price) {
         live.add(price);
