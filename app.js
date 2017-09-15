@@ -1,43 +1,44 @@
-var sqlite3 = require('sqlite3').verbose();
-var priceServer = require('./priceServer.js');
-var webServer = require('./webServer.js');
+const sqlite3 = require('sqlite3').verbose();
+const express = require('express');
+const app = express();
 
-// should probably correspond to web server setup
-var httpPort = 3033;
-var wsPort = 3034;
+const priceServer = require('./priceServer.js');
+const webServer = require('./webServer.js');
 
-var updateInterval = 5000;
+const port = process.env.VIRTUAL_PORT || 3033;
+const dbFile = process.env.DB_FILE || 'db.sqlite';
 
-var db = new sqlite3.Database('/home/torkildr/.bitmynt');
+const updateInterval = 5000;
 
-var getPriceData = function(last, completed) {
-    var data = [];
+const db = new sqlite3.Database(dbFile);
 
-    db.each('SELECT * FROM price WHERE time > ? ORDER BY time ASC', last, function(err, row) {
-        last = row.time;
-        data.push(row);
-    }, function() {
-        completed(data, last);
-    });
+const getPriceData = function(last, completed) {
+  const data = [];
+
+  db.each('SELECT * FROM price WHERE time > ? ORDER BY time ASC', last, (err, row) => {
+    last = row.time;
+    data.push(row);
+  }, () => completed(data, last));
 };
 
-var updatePrice = function(client) {
-    getPriceData(client.lastTime, function(data, last) {
-        if (data.length != 0){
-            client.lastTime = last;
-            client.send(JSON.stringify(data));
-        } else {
-            client.ping();
-        }
-
-        client.timeout = setTimeout(updatePrice, updateInterval, client);
-    });
+const updatePrice = (client) => {
+  getPriceData(client.lastTime, (data, last) => {
+    if (data.length != 0){
+      client.lastTime = last;
+      client.send(JSON.stringify(data));
+    } else {
+      client.ping();
+    }
+    client.timeout = setTimeout(updatePrice, updateInterval, client);
+  });
 };
 
-var cancelUpdate = function(client) {
-    clearTimeout(client.timeout);
+const cancelUpdate = (client) => {
+  clearTimeout(client.timeout);
 };
 
-priceServer.listen(wsPort, updatePrice, cancelUpdate);
-webServer.listen(httpPort);
+priceServer.listen(app, updatePrice, cancelUpdate);
+webServer.listen(app, port);
+
+console.log(`listening on port ${port}`);
 
