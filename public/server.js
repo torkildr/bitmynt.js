@@ -3,7 +3,7 @@ function PriceServer(url) {
     var connection = new ReconnectingWebSocket(url);
 
     var now = Math.round(new Date().getTime() / 1000);
-    var maxTime = now - (24 * 60 * 60);
+    var maxTime = now - (24 * 60 * 60 * 30); // one month
 
     connection.onopen = function(e) {
         console.log("connected to: " + url);
